@@ -4239,13 +4239,13 @@ func malg(stacksize int32) *g {
 // Put it on the queue of g's waiting to run.
 // The compiler turns a go statement into a call to this.
 func newproc(fn *funcval) {
-	gp := getg()
-	pc := getcallerpc()
+	gp := getg()        // 获取当前的g
+	pc := getcallerpc() // 获取当前程序计数器
 	systemstack(func() {
-		newg := newproc1(fn, gp, pc)
+		newg := newproc1(fn, gp, pc) // new一个新g
 
 		_p_ := getg().m.p.ptr()
-		runqput(_p_, newg, true)
+		runqput(_p_, newg, true) // 尝试将g放入本地执行队列
 
 		if mainStarted {
 			wakep()
@@ -4257,13 +4257,13 @@ func newproc(fn *funcval) {
 // address of the go statement that created this. The caller is responsible
 // for adding the new g to the scheduler.
 func newproc1(fn *funcval, callergp *g, callerpc uintptr) *g {
-	_g_ := getg()
+	_g_ := getg() // 获取当前的g
 
 	if fn == nil {
 		_g_.m.throwing = -1 // do not dump full stacks
 		throw("go of nil func value")
 	}
-	acquirem() // disable preemption because it can be holding p in a local var
+	acquirem() // disable preemption（抢占） because it can be holding p in a local var
 
 	_p_ := _g_.m.p.ptr()
 	newg := gfget(_p_)
@@ -5865,7 +5865,7 @@ const randomizeScheduler = raceenabled
 // If the run queue is full, runnext puts g on the global queue.
 // Executed only by the owner P.
 func runqput(_p_ *p, gp *g, next bool) {
-	if randomizeScheduler && next && fastrandn(2) == 0 {
+	if randomizeScheduler && next && fastrandn(2) == 0 { // 随机调度 1/2 机会调度
 		next = false
 	}
 

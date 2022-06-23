@@ -627,10 +627,10 @@ type p struct {
 	// runnext, if non-nil, is a runnable G that was ready'd by
 	// the current G and should be run next instead of what's in
 	// runq if there's time remaining in the running G's time
-	// slice. It will inherit the time left in the current time
+	// slice. It will inherit(继承) the time left in the current time
 	// slice. If a set of goroutines is locked in a
-	// communicate-and-wait pattern, this schedules that set as a
-	// unit and eliminates the (potentially large) scheduling
+	// communicate（通知）-and-wait pattern, this schedules that set as a
+	// unit and eliminates（消除） the (potentially（潜在的） large) scheduling
 	// latency that otherwise arises from adding the ready'd
 	// goroutines to the end of the run queue.
 	//
